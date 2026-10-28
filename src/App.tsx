@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Settings2, Volume2, VolumeX } from 'lucide-react';
+import { Settings2, Volume2, VolumeX, BookOpen } from 'lucide-react';
 import type { AppConfig } from './types';
 import { ParticleCanvas } from './components/ParticleCanvas';
 import { CountdownClock } from './components/CountdownClock';
@@ -25,7 +25,6 @@ export default function App() {
         if (parsed.sisterName !== 'Giulliana') {
           parsed.sisterName = 'Giulliana';
         }
-        // Force target date to Oct 30 00:00:00
         parsed.targetDate = "2026-10-30T00:00:00";
         return parsed;
       } catch {
@@ -41,6 +40,11 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('birthday_40_config', JSON.stringify(config));
+    // Auto-open if query param ?sorpresa=true is present
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('sorpresa') === 'true') {
+      setIsSurpriseOpen(true);
+    }
   }, [config]);
 
   const handleToggleAudio = () => {
@@ -54,17 +58,32 @@ export default function App() {
 
   return (
     <div className="relative h-screen w-screen overflow-hidden flex flex-col justify-between items-center select-none bg-[#06040A] text-[#F3E5AB]">
+      {/* Background Illustrated Scene (Hogwarts Arrival Backdrop) */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center opacity-15 mix-blend-luminosity scale-105"
+        style={{ backgroundImage: `url('/images/arrival.jpg')` }}
+      />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-t from-[#06040A] via-[#06040A]/80 to-[#06040A]/95" />
+
       {/* Floating Hogwarts Candles & Lumos Sparks */}
       <ParticleCanvas />
 
-      {/* Magical Atmosphere Glows */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-1/4 left-1/3 w-[35rem] h-[35rem] bg-[#D3A625]/10 rounded-full blur-[160px]" />
-        <div className="absolute -bottom-24 right-1/4 w-[35rem] h-[35rem] bg-[#740001]/15 rounded-full blur-[170px]" />
-      </div>
-
-      {/* Floating Corner Controls (Discretos y sin barra) */}
+      {/* Floating Corner Controls */}
       <div className="fixed top-4 right-4 z-40 flex items-center gap-2">
+        {/* Discreet preview button for the comic story */}
+        <button
+          onClick={() => {
+            sound.playClick();
+            setIsSurpriseOpen(true);
+          }}
+          className="px-3 py-2 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md border border-[#D3A625]/40 text-[#FFD700] hover:text-white transition-all cursor-pointer opacity-70 hover:opacity-100 shadow-lg text-xs font-serif-magic flex items-center gap-1.5"
+          title="Vista previa del cómic 'La Orden de las 4 Décadas'"
+        >
+          <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+          <span className="hidden sm:inline">Ver Historieta</span>
+        </button>
+
+        {/* Audio Toggle */}
         <button
           onClick={handleToggleAudio}
           className="p-2.5 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md border border-[#D3A625]/30 text-[#D3A625] hover:text-[#FFF] transition-all cursor-pointer opacity-50 hover:opacity-100 shadow-lg"
@@ -72,13 +91,15 @@ export default function App() {
         >
           {isAudioOn ? <Volume2 className="w-4 h-4 text-amber-400 animate-pulse" /> : <VolumeX className="w-4 h-4" />}
         </button>
+
+        {/* Settings Toggle */}
         <button
           onClick={() => {
             sound.playClick();
             setIsSettingsOpen(true);
           }}
           className="p-2.5 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md border border-[#D3A625]/30 text-[#D3A625] hover:text-[#FFF] transition-all cursor-pointer opacity-50 hover:opacity-100 shadow-lg"
-          title="Ajustar fecha y hora"
+          title="Ajustes de fecha y video"
         >
           <Settings2 className="w-4 h-4" />
         </button>
@@ -127,7 +148,7 @@ export default function App() {
         />
       </section>
 
-      {/* BOTTOM FOOTER: Juro solemnemente que mis intenciones no son buenas */}
+      {/* BOTTOM FOOTER: Juro solemnemente */}
       <footer className="relative z-10 w-full max-w-4xl mx-auto px-4 pb-4 sm:pb-6 text-center shrink-0">
         <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-[#D3A625]/90 font-serif-magic tracking-wider uppercase">
           <span>⚡</span>
@@ -135,11 +156,11 @@ export default function App() {
           <span>⚡</span>
         </div>
         <p className="text-[11px] text-[#A89874] mt-1 font-parchment">
-          Al llegar a 0 se desbloquea el decreto oficial y la sorpresa familiar
+          Al llegar a 0 se abre automáticamente el cómic: "Giulliana y la Orden de las 4 Décadas"
         </p>
       </footer>
 
-      {/* Surprise Modal (Harry Potter Hogwarts decree) */}
+      {/* Surprise Modal: The Harry Potter Comic Story */}
       <SurpriseModal
         isOpen={isSurpriseOpen}
         onClose={() => setIsSurpriseOpen(false)}
