@@ -289,8 +289,8 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
         )}
       </AnimatePresence>
 
-      {/* BOTTOM CONTROLLER BAR (Floating seamlessly over the cartoon) */}
-      <footer className="relative z-30 p-4 sm:p-6 flex items-center justify-between w-full max-w-4xl mx-auto">
+      {/* BOTTOM CONTROLLER BAR (Fixed to bottom, no overlap with top banner) */}
+      <footer className="fixed bottom-4 sm:bottom-6 inset-x-4 sm:inset-x-8 z-30 flex items-center justify-between max-w-4xl mx-auto pointer-events-auto">
         <div className="flex items-center gap-2">
           <button
             onClick={onBackToCountdown}
