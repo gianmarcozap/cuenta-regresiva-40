@@ -14,6 +14,7 @@ const DEFAULT_CONFIG: AppConfig = {
   youtubeVideoId: "",
   directVideoUrl: "",
   headlineCustom: "Ni un Giratiempo puede detener este cumpleaños. ¡La verdadera magia de las cuatro décadas apenas comienza!",
+  birthdayLetter: "Para mi hermana Giulliana:\n\n¡Felices 40 años! ⚡\n\nLlegaste a las cuatro décadas más fuerte, más sabia y más canchera que nunca. Dicen que cumplir 40 asusta, pero la verdad es que te convertiste en la mejor versión de vos misma. Gracias por las risas, por bancarme siempre, por ser mi compañera incondicional y por ponerle magia a toda la familia.\n\nNo importa cuántos años pasen: para mí siempre vas a ser mi hermana querida y la campeona de Gryffindor.\n\n¡Que este nuevo año te traiga todo lo que soñás y más!\n\nCon todo mi cariño,\nTu hermano.",
 };
 
 export default function App() {
@@ -177,6 +178,7 @@ export default function App() {
           <ComicExperience
             key="comic-experience"
             sisterName={config.sisterName}
+            birthdayLetter={config.birthdayLetter}
             onBackToCountdown={() => setMode('countdown')}
           />
         )}

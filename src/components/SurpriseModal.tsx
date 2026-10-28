@@ -25,7 +25,7 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
     if (isOpen) {
       setCurrentPage(0);
       sound.playGrandMagicChime();
-      sound.playHedwigOpening();
+      sound.playBgm();
       fireGrandCelebration();
     }
   }, [isOpen]);

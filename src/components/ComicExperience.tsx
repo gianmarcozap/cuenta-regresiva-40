@@ -1,29 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Send, Clock, Volume2, VolumeX, Sparkles } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Clock, Volume2, VolumeX, Sparkles, X, Scroll } from 'lucide-react';
 import { sound } from '../lib/audio';
 import { fireGrandCelebration } from '../lib/confetti';
 
 interface ComicExperienceProps {
   sisterName: string;
+  birthdayLetter?: string;
   onBackToCountdown: () => void;
 }
 
 export const ComicExperience: React.FC<ComicExperienceProps> = ({
   sisterName,
+  birthdayLetter,
   onBackToCountdown,
 }) => {
   const [sceneIndex, setSceneIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(!sound.enabled);
+  const [isParchmentOpen, setIsParchmentOpen] = useState(false);
 
   useEffect(() => {
-    if (!sound.enabled) {
-      sound.toggle();
-      setIsMuted(false);
-    }
+    // Enable background audio with Prologue.mp3 at 1.25x speed
+    sound.enabled = true;
+    sound.playBgm();
+    setIsMuted(false);
     sound.playGrandMagicChime();
-    sound.playHedwigOpening();
     fireGrandCelebration();
+
+    return () => {
+      sound.pauseBgm();
+    };
   }, []);
 
   const handleNext = () => {
@@ -45,13 +51,29 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
     setIsMuted(!enabled);
   };
 
-  const handleShareWhatsApp = () => {
-    const text = encodeURIComponent(
-      `¡Felices 40 años ${sisterName}! ⚡ Mirá la historieta completa de 10 viñetas que te armamos en Hogwarts: `
-    );
-    const url = encodeURIComponent(window.location.origin);
-    window.open(`https://api.whatsapp.com/send?text=${text}${url}`, '_blank');
+  const openParchment = () => {
+    sound.playGrandMagicChime();
+    setIsParchmentOpen(true);
   };
+
+  const defaultLetter = `Para mi querida hermana ${sisterName}:
+
+¡Felices 40 años! ⚡
+
+Llegaste a las cuatro décadas más fuerte, más sabia y con la mejor onda del mundo. Dicen que cumplir 40 asusta, pero la verdad es que te convertiste en la mejor versión de ti misma. 
+
+Gracias por todas las risas, por apoyarme siempre, por ser mi compañera incondicional y por ponerle magia a nuestras vidas.
+
+No importa cuántos años pasen: para mí siempre vas a ser mi hermana y la campeona indiscutida de Gryffindor.
+
+¡Que sigas cumpliendo muchos mas años de alegría y magia!
+
+Te amo hermanita, y estoy orgulloso de ti cada dia.
+
+Con todo mi cariño y amor,
+Tu Gemelo con barba.`;
+
+  const letterText = birthdayLetter || defaultLetter;
 
   // The 10 High-Resolution 16:9 Comic Scenes
   const scenes = [
@@ -134,8 +156,7 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
       banner: "CORONACIÓN: LA ORDEN DE LAS 4 DÉCADAS",
       image: "/images/scene_10_coronation.jpg",
       speaker: "Toda la Casa Gryffindor",
-      dialogue: "«¡VIVA GIULLIANA! Cuatro décadas de pura magia, risas y la mejor hermana del universo.»",
-      sfx: "¡FUEGOS ARTIFICIALES 40! 🎆",
+      dialogue: "",
       isFinal: true,
     }
   ];
@@ -151,7 +172,7 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
           className="absolute inset-0 w-full h-full bg-cover bg-center"
           style={{ backgroundImage: `url('${current.image}')` }}
         >
@@ -167,7 +188,7 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
             </div>
           </div>
 
-          {/* SFX BADGE (Discreetly in the corner, not on final photo) */}
+          {/* SFX BADGE (Only on scenes 1 to 9) */}
           {current.sfx && !current.isFinal && (
             <motion.div
               initial={{ scale: 0, rotate: -15 }}
@@ -179,7 +200,7 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
             </motion.div>
           )}
 
-          {/* LOWER COMIC DIALOGUE BOX (Only on scenes 1 to 9 - final scene leaves photo completely clean) */}
+          {/* LOWER COMIC DIALOGUE BOX (Only on scenes 1 to 9) */}
           {!current.isFinal && (
             <div className="absolute bottom-20 sm:bottom-24 inset-x-3 sm:inset-x-8 max-w-3xl mx-auto z-20">
               <motion.div
@@ -208,12 +229,99 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
               </motion.div>
             </div>
           )}
+
+          {/* FINAL SCENE: FLOATING MAGICAL PARCHMENT BUTTON (SCENE 10) */}
+          {current.isFinal && (
+            <div className="absolute bottom-20 sm:bottom-24 inset-x-4 max-w-md mx-auto z-20 flex justify-center">
+              <motion.button
+                onClick={openParchment}
+                initial={{ scale: 0.9, y: 15 }}
+                animate={{ scale: [1, 1.05, 1], y: [0, -6, 0] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+                className="group px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#D3A625] via-[#FFE600] to-[#E5BE57] text-black font-black text-xs sm:text-sm font-serif-magic border-3 border-black shadow-[6px_6px_0px_#000] flex items-center gap-3 cursor-pointer hover:brightness-110 active:translate-x-[2px] active:translate-y-[2px]"
+              >
+                <div className="w-8 h-8 rounded-xl bg-black/10 flex items-center justify-center text-xl">
+                  📜
+                </div>
+                <div className="text-left leading-tight">
+                  <span className="text-[10px] font-mono uppercase tracking-wider block text-red-800">Carta Secreta</span>
+                  <span className="font-comic font-black text-sm">Abrir Pergamino de tu Hermano</span>
+                </div>
+                <Sparkles className="w-4 h-4 text-amber-800 animate-spin" style={{ animationDuration: '4s' }} />
+              </motion.button>
+            </div>
+          )}
         </motion.div>
+      </AnimatePresence>
+
+      {/* UNROLLED FLOATING PARCHMENT MODAL (Full Reading Mode) */}
+      <AnimatePresence>
+        {isParchmentOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.85, y: 30 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-xl parchment-card rounded-3xl p-6 sm:p-9 text-[#2B1810] shadow-[12px_12px_0px_#000] border-4 border-black max-h-[90vh] overflow-y-auto"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  setIsParchmentOpen(false);
+                }}
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/10 hover:bg-black/20 text-[#2B1810] flex items-center justify-center cursor-pointer transition-all"
+                title="Cerrar pergamino"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Hogwarts Wax Seal Header */}
+              <div className="text-center pb-4 border-b-2 border-[#8C6A3C]/40 mb-5">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#740001] text-[#FFD700] text-xl font-serif-magic border-2 border-[#D3A625] shadow-lg mb-2">
+                  ⚡
+                </div>
+                <div className="text-[11px] font-black uppercase tracking-widest text-[#740001] font-mono">
+                  Colegio Hogwarts de Magia y Hechicería
+                </div>
+                <h3 className="font-magic text-xl sm:text-2xl font-black text-[#2B1810] mt-1">
+                  Decreto Fraternal de los 40 Años
+                </h3>
+              </div>
+
+              {/* The Letter Body */}
+              <div className="font-parchment text-sm sm:text-base leading-relaxed space-y-4 whitespace-pre-line text-[#3C2415] italic font-medium px-2">
+                {letterText}
+              </div>
+
+              {/* Bottom Wax Seal Signature & Close */}
+              <div className="mt-8 pt-4 border-t-2 border-[#8C6A3C]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <Scroll className="w-5 h-5 text-[#740001]" />
+                  <span className="text-xs font-serif-magic font-bold text-[#740001]">
+                    Sellado bajo juramento de Gryffindor
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    setIsParchmentOpen(false);
+                  }}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#2B1810] hover:bg-[#442817] text-[#FFE8A3] font-serif-magic font-bold text-xs transition-all cursor-pointer shadow-md"
+                >
+                  Enrollar pergamino y volver a la foto ↺
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
       </AnimatePresence>
 
       {/* FIXED BOTTOM NAVIGATION CONTROLLER */}
       <footer className="fixed bottom-3 sm:bottom-5 inset-x-3 sm:inset-x-8 z-30 flex items-center justify-between max-w-4xl mx-auto pointer-events-auto">
-        {/* Left: Volver al reloj + Toggle de audio Hedwig */}
+        {/* Left: Volver al reloj + Toggle de audio Prologue */}
         <div className="flex items-center gap-2">
           <button
             onClick={onBackToCountdown}
@@ -226,7 +334,7 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
           <button
             onClick={toggleSound}
             className="p-2 rounded-xl bg-black/85 hover:bg-black text-[#FFDE00] border-2 border-black shadow-[3px_3px_0px_#000] cursor-pointer"
-            title={isMuted ? "Activar música de Hedwig" : "Silenciar"}
+            title={isMuted ? "Activar música Prologue (1.25x)" : "Silenciar música"}
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400 animate-pulse" />}
           </button>
@@ -262,14 +370,16 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
           ))}
         </div>
 
-        {/* Right: Next / Finish WhatsApp Button */}
+        {/* Right: Next / Releer Button */}
         {sceneIndex === 9 ? (
           <button
-            onClick={handleShareWhatsApp}
-            className="px-4 sm:px-5 py-2 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-black font-black text-xs border-2 border-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px]"
+            onClick={() => {
+              sound.playClick();
+              setSceneIndex(0);
+            }}
+            className="px-4 sm:px-5 py-2 rounded-xl bg-[#FFDE00] hover:bg-[#FFE838] text-black font-black text-xs border-2 border-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px]"
           >
-            <Send className="w-3.5 h-3.5 text-black" />
-            <span>Felicitar por WhatsApp 🦉</span>
+            <span>Releer historieta ↺</span>
           </button>
         ) : (
           <button

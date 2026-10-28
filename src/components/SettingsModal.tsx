@@ -131,6 +131,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               />
             </div>
 
+            {/* Mensaje del Pergamino Secreto */}
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5 mb-1.5">
+                <span className="text-amber-400">📜</span>
+                Mensaje de tu Pergamino Secreto (Carta de cumpleaños)
+              </label>
+              <textarea
+                rows={4}
+                value={form.birthdayLetter || ''}
+                onChange={(e) => setForm({ ...form, birthdayLetter: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-amber-400/60 focus:bg-white/10 transition-all font-sans leading-relaxed"
+                placeholder="Escribí acá tu dedicatoria especial de cumpleaños..."
+              />
+            </div>
+
             {/* Submit */}
             <div className="pt-4 flex items-center justify-end gap-3">
               <button

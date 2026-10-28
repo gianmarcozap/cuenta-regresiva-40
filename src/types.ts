@@ -4,6 +4,7 @@ export interface AppConfig {
   youtubeVideoId: string;
   directVideoUrl: string;
   headlineCustom: string;
+  birthdayLetter?: string;
 }
 
 export interface TimeLeft {
