@@ -10,8 +10,8 @@ import { SurpriseModal } from './components/SurpriseModal';
 import { SettingsModal } from './components/SettingsModal';
 
 const DEFAULT_CONFIG: AppConfig = {
-  sisterName: "Mariana",
-  // Default target date: 7 days in the future for preview
+  sisterName: "Giualliana",
+  // Default target date: 7 days in future if not set
   targetDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
   youtubeVideoId: "",
   directVideoUrl: "",
@@ -23,7 +23,12 @@ export default function App() {
     const saved = localStorage.getItem('birthday_40_config');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Force update to Giualliana if old test name was Mariana
+        if (parsed.sisterName === 'Mariana' || !parsed.sisterName) {
+          parsed.sisterName = 'Giualliana';
+        }
+        return parsed;
       } catch {
         return DEFAULT_CONFIG;
       }
@@ -61,7 +66,6 @@ export default function App() {
         isAudioOn={isAudioOn}
         setIsAudioOn={setIsAudioOn}
         onOpenSettings={() => setIsSettingsOpen(true)}
-        onTriggerSurprise={() => setIsSurpriseOpen(true)}
       />
 
       {/* Hero Section & Countdown */}
@@ -116,11 +120,11 @@ export default function App() {
           <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 inline" />
         </div>
         <div>
-          Al llegar a 0 se desbloquea la sorpresa familiar • Listo para desplegar en Vercel
+          Al llegar a 0 se desbloquea automáticamente la sorpresa familiar
         </div>
       </footer>
 
-      {/* Surprise Modal (The Climax) */}
+      {/* Surprise Modal (The Climax - Only triggers automatically at 0) */}
       <SurpriseModal
         isOpen={isSurpriseOpen}
         onClose={() => setIsSurpriseOpen(false)}

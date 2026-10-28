@@ -1,5 +1,5 @@
 import React from 'react';
-import { Volume2, VolumeX, Sparkles, Settings2, Play } from 'lucide-react';
+import { Volume2, VolumeX, Settings2 } from 'lucide-react';
 import { sound } from '../lib/audio';
 
 interface NavbarProps {
@@ -7,7 +7,6 @@ interface NavbarProps {
   isAudioOn: boolean;
   setIsAudioOn: (val: boolean) => void;
   onOpenSettings: () => void;
-  onTriggerSurprise: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -15,7 +14,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   isAudioOn,
   setIsAudioOn,
   onOpenSettings,
-  onTriggerSurprise,
 }) => {
   const handleToggleAudio = () => {
     const newState = sound.toggle();
@@ -35,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="leading-tight">
             <div className="flex items-center gap-2">
               <span className="text-[10px] uppercase tracking-widest font-bold text-amber-400/90 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/20">
-                Operación VIP
+                Edición Oficial
               </span>
             </div>
             <h2 className="text-sm sm:text-base font-extrabold text-white tracking-tight flex items-center gap-1.5 mt-0.5">
@@ -70,20 +68,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* Test Surprise (Climax trigger) */}
-          <button
-            onClick={() => {
-              sound.playClick();
-              onTriggerSurprise();
-            }}
-            className="group relative px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-rose-400 hover:from-amber-300 hover:to-rose-300 transition-all shadow-lg shadow-amber-500/25 flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
-            title="Simular momento cero y ver la sorpresa instantáneamente"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-slate-900 group-hover:rotate-12 transition-transform" />
-            <span>Probar Sorpresa</span>
-            <Play className="w-3 h-3 fill-slate-950 text-slate-950 ml-0.5 hidden sm:inline" />
-          </button>
-
           {/* Settings modal trigger */}
           <button
             onClick={() => {
@@ -91,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onOpenSettings();
             }}
             className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer"
-            title="Personalizar nombre, fecha y video"
+            title="Configurar fecha y video"
           >
             <Settings2 className="w-4 h-4" />
           </button>
