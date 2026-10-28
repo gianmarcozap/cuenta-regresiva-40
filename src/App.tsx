@@ -177,8 +177,6 @@ export default function App() {
           <ComicExperience
             key="comic-experience"
             sisterName={config.sisterName}
-            youtubeVideoId={config.youtubeVideoId}
-            directVideoUrl={config.directVideoUrl}
             onBackToCountdown={() => setMode('countdown')}
           />
         )}
