@@ -52,60 +52,71 @@ export const CountdownClock: React.FC<CountdownClockProps> = ({
   }, [targetDate]);
 
   const units = [
-    { label: 'DÍAS', value: timeLeft.days, glow: 'rgba(245, 158, 11, 0.3)', textColor: 'text-amber-100' },
-    { label: 'HORAS', value: timeLeft.hours, glow: 'rgba(244, 63, 94, 0.3)', textColor: 'text-rose-100' },
-    { label: 'MINUTOS', value: timeLeft.minutes, glow: 'rgba(192, 132, 252, 0.3)', textColor: 'text-purple-100' },
-    { label: 'SEGUNDOS', value: timeLeft.seconds, glow: 'rgba(251, 191, 36, 0.45)', textColor: 'text-amber-300', isSeconds: true },
+    { label: 'DÍAS', value: timeLeft.days, rune: 'ᛞ', borderAccent: 'border-amber-500/30' },
+    { label: 'HORAS', value: timeLeft.hours, rune: 'ᚺ', borderAccent: 'border-amber-500/30' },
+    { label: 'MINUTOS', value: timeLeft.minutes, rune: 'ᛗ', borderAccent: 'border-amber-500/30' },
+    { label: 'SEGUNDOS', value: timeLeft.seconds, rune: '⚡', borderAccent: 'border-amber-400/60', isSeconds: true },
   ];
 
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <div className="w-full max-w-6xl mx-auto my-6 sm:my-10 px-2 sm:px-4">
-      {/* MONUMENTAL COUNTDOWN GRID */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+    <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 my-auto">
+      {/* 4 Cards Grid framed without vertical scroll */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 md:gap-6">
         {units.map((unit) => (
           <div
             key={unit.label}
-            className="group relative rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-8 md:p-10 glass-panel text-center overflow-hidden transition-all duration-500 hover:border-amber-400/50 hover:scale-[1.02] border border-white/10"
-            style={{
-              boxShadow: `0 25px 60px rgba(0,0,0,0.6), 0 0 45px ${unit.glow}`,
-            }}
+            className={`group relative rounded-3xl p-4 sm:p-6 md:p-8 hogwarts-frame text-center overflow-hidden transition-all duration-500 hover:scale-[1.02] ${unit.borderAccent}`}
           >
-            {/* Ambient inner flare */}
-            <div
-              className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-3xl opacity-50 group-hover:opacity-85 transition-opacity pointer-events-none"
-              style={{ background: unit.glow }}
-            />
+            {/* Corner Decorative Filigree Elements (Harry Potter style) */}
+            <div className="absolute top-2 left-2 text-[10px] text-amber-500/40 font-mono pointer-events-none select-none">
+              ✦
+            </div>
+            <div className="absolute top-2 right-2 text-[10px] text-amber-500/40 font-mono pointer-events-none select-none">
+              ✦
+            </div>
+            <div className="absolute bottom-2 left-2 text-[10px] text-amber-500/40 font-mono pointer-events-none select-none">
+              ✦
+            </div>
+            <div className="absolute bottom-2 right-2 text-[10px] text-amber-500/40 font-mono pointer-events-none select-none">
+              ✦
+            </div>
+
+            {/* Ambient magic aura */}
+            <div className="absolute -top-12 -right-12 w-28 h-28 bg-[#D3A625]/15 rounded-full blur-2xl group-hover:bg-[#D3A625]/25 transition-all pointer-events-none" />
 
             {/* Giant Digit Display */}
-            <div className="relative z-10 flex items-center justify-center min-h-[90px] sm:min-h-[130px] md:min-h-[160px]">
+            <div className="relative z-10 flex items-center justify-center min-h-[70px] sm:min-h-[100px] md:min-h-[120px]">
               <AnimatePresence mode="popLayout">
                 <motion.span
                   key={unit.value}
-                  initial={{ opacity: 0, y: 20, scale: 0.93 }}
+                  initial={{ opacity: 0, y: 15, scale: 0.94 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.93 }}
+                  exit={{ opacity: 0, y: -15, scale: 0.94 }}
                   transition={{ duration: 0.25, ease: 'easeOut' }}
-                  className={`font-mono text-6xl sm:text-8xl md:text-9xl lg:text-[7.5rem] font-black tracking-tighter ${unit.textColor} drop-shadow-[0_8px_30px_rgba(0,0,0,0.9)]`}
+                  className="font-mono text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-black tracking-tight text-[#FFF4D0] drop-shadow-[0_4px_20px_rgba(211,166,37,0.4)]"
                 >
                   {pad(unit.value)}
                 </motion.span>
               </AnimatePresence>
             </div>
 
-            {/* Sub-label */}
-            <div className="relative z-10 mt-3 sm:mt-5 flex items-center justify-center gap-2">
-              {unit.isSeconds && (
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
-              )}
-              <span className="text-xs sm:text-sm md:text-base font-black tracking-[0.25em] text-slate-300 uppercase">
+            {/* Rune & Label */}
+            <div className="relative z-10 mt-2 sm:mt-3 flex items-center justify-center gap-1.5 sm:gap-2">
+              <span className="text-amber-400/80 text-xs font-serif-magic">
+                {unit.rune}
+              </span>
+              <span className="text-[11px] sm:text-xs md:text-sm font-black tracking-[0.25em] text-[#D3A625] uppercase font-serif-magic">
                 {unit.label}
+              </span>
+              <span className="text-amber-400/80 text-xs font-serif-magic">
+                {unit.rune}
               </span>
             </div>
 
-            {/* Bottom Metallic Gradient Accent */}
-            <div className="absolute bottom-0 inset-x-8 h-[3px] bg-gradient-to-r from-transparent via-amber-400/40 to-transparent group-hover:via-amber-400/80 transition-all" />
+            {/* Subtle bottom gold enchanted line */}
+            <div className="absolute bottom-0 inset-x-6 h-[2px] bg-gradient-to-r from-transparent via-[#D3A625]/60 to-transparent group-hover:via-[#FFD700] transition-all" />
           </div>
         ))}
       </div>

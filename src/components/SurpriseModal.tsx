@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Share2, Play, Award, RotateCcw } from 'lucide-react';
+import { X, Sparkles, Send, Play, RotateCcw } from 'lucide-react';
 import { sound } from '../lib/audio';
 import { fireGrandCelebration } from '../lib/confetti';
 
@@ -21,20 +21,21 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
 }) => {
   useEffect(() => {
     if (isOpen) {
-      sound.playFanfare();
+      sound.playGrandMagicChime();
+      sound.playHedwigOpening();
       fireGrandCelebration();
     }
   }, [isOpen]);
 
   const handleShareWhatsApp = () => {
     const text = encodeURIComponent(
-      `¡Felices 40 años ${sisterName}! 🎉 Oficialmente inaugurado el cuarto piso. Mirá el homenaje que te armamos acá: `
+      `¡Felices 40 años ${sisterName}! ⚡ El Sombrero Seleccionador confirma tu ingreso triunfal al cuarto piso. Mirá el homenaje de Hogwarts acá: `
     );
     const url = encodeURIComponent(window.location.href);
     window.open(`https://api.whatsapp.com/send?text=${text}${url}`, '_blank');
   };
 
-  const handleMoreConfetti = () => {
+  const handleMoreMagic = () => {
     sound.playClick();
     fireGrandCelebration();
   };
@@ -43,17 +44,17 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl">
-        {/* Ambient Glows */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/20 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-500/20 rounded-full blur-[140px] pointer-events-none" />
+      <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-4 bg-black/95 backdrop-blur-2xl select-none">
+        {/* Magic Aura Flares */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#D3A625]/20 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#740001]/25 rounded-full blur-[140px] pointer-events-none" />
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 30 }}
+          initial={{ opacity: 0, scale: 0.9, y: 25 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 30 }}
+          exit={{ opacity: 0, scale: 0.9, y: 25 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-4xl my-8 glass-panel rounded-3xl p-6 sm:p-10 border border-amber-400/40 shadow-[0_0_100px_rgba(245,158,11,0.25)] text-center overflow-hidden z-10"
+          className="relative w-full max-w-3xl my-4 hogwarts-frame rounded-3xl p-5 sm:p-8 border-2 border-[#D3A625]/60 shadow-[0_0_90px_rgba(211,166,37,0.3)] text-center overflow-hidden z-10"
         >
           {/* Close button */}
           <button
@@ -61,28 +62,29 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
               sound.playClick();
               onClose();
             }}
-            className="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all cursor-pointer z-20"
+            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/40 hover:bg-black/70 border border-[#D3A625]/40 flex items-center justify-center text-[#D3A625] hover:text-white transition-all cursor-pointer z-20"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
 
-          {/* Top celebratory pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-rose-500/20 to-purple-500/20 border border-amber-400/40 text-amber-300 text-xs sm:text-sm font-black tracking-widest uppercase mb-4 animate-bounce">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            ¡OBJETIVO CUMPLIDO: 40 AÑOS DE PURA MAGIA!
+          {/* Hogwarts Crest / Wax Seal */}
+          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#740001]/40 border border-[#D3A625]/50 text-[#FFD700] text-xs font-serif-magic tracking-widest uppercase mb-3">
+            <span>⚡</span>
+            <span>MINISTERIO DE LA MAGIA • DECRETO ESPECIAL</span>
+            <span>⚡</span>
           </div>
 
           {/* Main Title */}
-          <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white mb-2">
-            ¡FELICES 40, <span className="text-gold-gradient">{sisterName.toUpperCase()}</span>!
+          <h2 className="font-magic text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-2 gold-foil-text">
+            ¡FELICES 40, {sisterName.toUpperCase()}!
           </h2>
 
-          <p className="text-slate-300 text-sm sm:text-lg max-w-2xl mx-auto font-medium mb-8 leading-relaxed">
-            Te quejaste todo el año de que llegaba esta fecha, ¡pero mirá lo diosa que estás! De parte de toda la familia, este es tu momento.
+          <p className="text-[#EADBB6] text-xs sm:text-sm font-parchment italic max-w-xl mx-auto mb-5 leading-relaxed">
+            "El Sombrero Seleccionador ha deliberado: ni un Giratiempo puede retrasar este día, pero la verdadera magia apenas comienza."
           </p>
 
           {/* VIDEO PLAYER THEATER */}
-          <div className="relative w-full aspect-video rounded-3xl overflow-hidden glass-panel border border-amber-400/30 shadow-2xl mb-8 flex items-center justify-center bg-slate-950/90 group">
+          <div className="relative w-full aspect-video rounded-2xl overflow-hidden hogwarts-frame border-2 border-[#D3A625]/40 shadow-2xl mb-5 flex items-center justify-center bg-black/90 group">
             {youtubeVideoId ? (
               <iframe
                 className="w-full h-full"
@@ -98,64 +100,57 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
                 Tu navegador no soporta el video.
               </video>
             ) : (
-              /* High-fidelity Placeholder ready for when video is added */
-              <div className="p-6 text-center max-w-md flex flex-col items-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-amber-400 to-rose-500 p-[2px] shadow-2xl shadow-rose-500/30 mb-4 group-hover:scale-110 transition-transform">
-                  <div className="w-full h-full bg-[#0A0C16] rounded-[22px] flex items-center justify-center text-amber-300">
-                    <Play className="w-8 h-8 fill-amber-300 text-amber-300 ml-1" />
+              /* Harry Potter Styled Video Placeholder */
+              <div className="p-4 text-center max-w-sm flex flex-col items-center">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#D3A625] to-[#740001] p-[2px] shadow-xl mb-3 group-hover:scale-110 transition-transform">
+                  <div className="w-full h-full bg-[#0E0B16] rounded-[14px] flex items-center justify-center text-[#FFD700]">
+                    <Play className="w-6 h-6 fill-[#FFD700] ml-0.5" />
                   </div>
                 </div>
-                <h3 className="text-white font-extrabold text-lg sm:text-xl mb-1">
-                  Sala de Video Sorpresa Lista
+                <h3 className="text-[#FFF0C2] font-serif-magic font-bold text-base mb-1">
+                  Pensadero Familiar de Recuerdos
                 </h3>
-                <p className="text-slate-400 text-xs sm:text-sm leading-relaxed mb-4">
-                  Acá se reproducirá automáticamente el video de saludos de amigos y familia cuando lo configures en el botón de ajustes (⚙️).
+                <p className="text-[#C5B38F] text-xs leading-relaxed mb-2 font-parchment">
+                  Acá aparecerá el video sorpresa cuando cargues el enlace en ajustes.
                 </p>
-                <div className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[11px] font-mono text-amber-300">
-                  Soporta YouTube y MP4 directo
+                <div className="px-2.5 py-1 rounded-lg bg-black/50 border border-[#D3A625]/30 text-[10px] font-mono text-[#D3A625]">
+                  Soporta YouTube o MP4
                 </div>
               </div>
             )}
           </div>
 
-          {/* DIPLOMA / CERTIFICADO OFICIAL */}
-          <div className="p-6 rounded-2xl bg-gradient-to-r from-amber-500/10 via-white/[0.02] to-rose-500/10 border border-amber-400/30 text-left mb-8 flex flex-col sm:flex-row items-center gap-6">
-            <div className="w-16 h-16 rounded-2xl bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-3xl shrink-0 shadow-lg shadow-amber-500/20">
-              <Award className="w-8 h-8 text-amber-400" />
-            </div>
+          {/* CARTA DE HOGWARTS / DIPLOMA */}
+          <div className="p-4 rounded-xl parchment-card text-left mb-5 flex items-center gap-4">
+            <div className="text-3xl sm:text-4xl">📜</div>
             <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xs uppercase tracking-widest font-black text-amber-400">
-                  Acta Oficial de Traspaso de Década
-                </span>
-                <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full font-bold">
-                  Validez Vitalicia
-                </span>
+              <div className="text-[10px] uppercase font-bold tracking-widest text-[#740001]">
+                Colegio Hogwarts de Magia y Hechicería
               </div>
-              <h4 className="text-white font-bold text-base mt-1">
-                Certificado de Ingreso al Club Exclusivo de los 40
+              <h4 className="text-[#2B1810] font-serif-magic font-black text-xs sm:text-sm mt-0.5">
+                Certificado de Orden de Merlín (Primera Clase)
               </h4>
-              <p className="text-slate-300 text-xs sm:text-sm mt-1 leading-relaxed">
-                Certificamos que <strong>{sisterName}</strong> mantiene intacta su juventud, belleza y encanto, con la ventaja de que ahora cualquier dolor de espalda es una anécdota respetable.
+              <p className="text-[#4A3225] text-[11px] sm:text-xs mt-0.5 font-parchment leading-tight">
+                Se certifica que <strong>{sisterName}</strong> ingresa oficialmente al Club de las 4 Décadas con honores de Gryffindor, manteniendo intacta su juventud y encanto.
               </p>
             </div>
             <button
-              onClick={handleMoreConfetti}
-              className="glass-panel px-4 py-2.5 rounded-xl text-xs font-black text-amber-300 hover:bg-amber-500/20 border-amber-400/40 transition-all flex items-center gap-2 shrink-0 cursor-pointer hover:scale-105 active:scale-95"
+              onClick={handleMoreMagic}
+              className="px-3 py-2 rounded-lg bg-[#740001] hover:bg-[#8B0000] text-[#FFD700] text-xs font-bold transition-all shrink-0 cursor-pointer shadow-md flex items-center gap-1"
             >
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>¡Más Confeti!</span>
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">¡Más Magia!</span>
             </button>
           </div>
 
-          {/* Bottom Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* Bottom Actions */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={handleShareWhatsApp}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm transition-all shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-emerald-900/40 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Share2 className="w-4 h-4" />
-              <span>Compartir Saludo por WhatsApp</span>
+              <Send className="w-4 h-4" />
+              <span>Mandar lechuza por WhatsApp 🦉</span>
             </button>
 
             <button
@@ -163,10 +158,10 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
                 sound.playClick();
                 onClose();
               }}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl glass-panel hover:bg-white/10 text-slate-200 font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-black/40 hover:bg-black/60 border border-[#D3A625]/30 text-[#D3A625] font-semibold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <RotateCcw className="w-4 h-4" />
-              <span>Volver a la Cuenta Regresiva</span>
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Volver al Reloj Mágico</span>
             </button>
           </div>
         </motion.div>
