@@ -75,7 +75,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 value={form.sisterName}
                 onChange={(e) => setForm({ ...form, sisterName: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400/60 focus:bg-white/10 transition-all font-medium"
-                placeholder="Ej: Giualliana"
+                placeholder="Ej: Giulliana"
                 required
               />
             </div>

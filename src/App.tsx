@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Heart } from 'lucide-react';
+import { Sparkles, Heart, Settings2, Volume2, VolumeX } from 'lucide-react';
 import type { AppConfig } from './types';
 import { ParticleCanvas } from './components/ParticleCanvas';
-import { Navbar } from './components/Navbar';
 import { CountdownClock } from './components/CountdownClock';
 import { BentoGrid } from './components/BentoGrid';
 import { SurpriseModal } from './components/SurpriseModal';
 import { SettingsModal } from './components/SettingsModal';
+import { sound } from './lib/audio';
 
 const DEFAULT_CONFIG: AppConfig = {
-  sisterName: "Giualliana",
-  // Default target date: 7 days in future if not set
+  sisterName: "Giulliana",
+  // Default target date: 7 days in future if not configured
   targetDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
   youtubeVideoId: "",
   directVideoUrl: "",
@@ -24,9 +24,9 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Force update to Giualliana if old test name was Mariana
-        if (parsed.sisterName === 'Mariana' || !parsed.sisterName) {
-          parsed.sisterName = 'Giualliana';
+        // Correct spelling to Giulliana
+        if (parsed.sisterName !== 'Giulliana') {
+          parsed.sisterName = 'Giulliana';
         }
         return parsed;
       } catch {
@@ -44,6 +44,11 @@ export default function App() {
     localStorage.setItem('birthday_40_config', JSON.stringify(config));
   }, [config]);
 
+  const handleToggleAudio = () => {
+    const newState = sound.toggle();
+    setIsAudioOn(newState);
+  };
+
   const handleSaveConfig = (newConfig: AppConfig) => {
     setConfig(newConfig);
   };
@@ -55,30 +60,43 @@ export default function App() {
 
       {/* Atmospheric Ambient Glows */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute -top-40 -left-40 w-[32rem] h-[32rem] bg-purple-600/15 rounded-full blur-[140px]" />
-        <div className="absolute top-1/3 -right-32 w-[34rem] h-[34rem] bg-rose-500/10 rounded-full blur-[150px]" />
-        <div className="absolute -bottom-32 left-1/4 w-[36rem] h-[36rem] bg-amber-500/10 rounded-full blur-[160px]" />
+        <div className="absolute -top-40 -left-40 w-[36rem] h-[36rem] bg-purple-600/15 rounded-full blur-[140px]" />
+        <div className="absolute top-1/3 -right-32 w-[38rem] h-[38rem] bg-rose-500/10 rounded-full blur-[150px]" />
+        <div className="absolute -bottom-32 left-1/4 w-[40rem] h-[40rem] bg-amber-500/10 rounded-full blur-[160px]" />
       </div>
 
-      {/* Navigation */}
-      <Navbar
-        sisterName={config.sisterName}
-        isAudioOn={isAudioOn}
-        setIsAudioOn={setIsAudioOn}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-      />
+      {/* Subtle Floating Corner Controls (Sin barra superior) */}
+      <div className="fixed top-5 right-5 z-40 flex items-center gap-2">
+        <button
+          onClick={handleToggleAudio}
+          className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-slate-400 hover:text-white transition-all cursor-pointer opacity-40 hover:opacity-100"
+          title={isAudioOn ? "Silenciar" : "Activar sonido"}
+        >
+          {isAudioOn ? <Volume2 className="w-4 h-4 text-amber-400" /> : <VolumeX className="w-4 h-4" />}
+        </button>
+        <button
+          onClick={() => {
+            sound.playClick();
+            setIsSettingsOpen(true);
+          }}
+          className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-slate-400 hover:text-white transition-all cursor-pointer opacity-40 hover:opacity-100"
+          title="Ajustar fecha y datos"
+        >
+          <Settings2 className="w-4 h-4" />
+        </button>
+      </div>
 
-      {/* Hero Section & Countdown */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pt-8 pb-12 text-center max-w-5xl mx-auto w-full">
+      {/* Hero Section & Massive Countdown */}
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pt-16 sm:pt-24 pb-12 text-center max-w-6xl mx-auto w-full">
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel text-xs font-bold tracking-widest uppercase text-amber-300 mb-6 border border-amber-400/30"
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass-panel text-xs sm:text-sm font-black tracking-widest uppercase text-amber-300 mb-6 border border-amber-400/30 shadow-lg"
         >
-          <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
+          <Sparkles className="w-4 h-4 text-amber-400" />
           <span>Cuenta Regresiva Oficial • Cambio de Década</span>
         </motion.div>
 
@@ -87,22 +105,22 @@ export default function App() {
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="font-display text-5xl sm:text-7xl md:text-8xl font-black tracking-tight leading-[1.05] mb-5 text-white"
+          className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight leading-[1.02] mb-4 text-white"
         >
           Rumbo a los <span className="text-gold-gradient">40 Años</span>
         </motion.h1>
 
-        {/* Dynamic Sister Name & Subtitle */}
+        {/* Sister Name & Headline */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-slate-300 text-base sm:text-xl max-w-2xl mx-auto font-normal leading-relaxed mb-6"
+          className="text-slate-300 text-lg sm:text-2xl max-w-3xl mx-auto font-normal leading-relaxed mb-6"
         >
-          Para <span className="text-white font-extrabold underline decoration-amber-400 decoration-2 underline-offset-4">{config.sisterName}</span>. {config.headlineCustom}
+          Para <span className="text-white font-black underline decoration-amber-400 decoration-4 underline-offset-8">{config.sisterName}</span>. {config.headlineCustom}
         </motion.p>
 
-        {/* Luxury Monumental Countdown Clock */}
+        {/* Monumental Countdown Clock */}
         <CountdownClock
           targetDate={config.targetDate}
           onZeroReached={() => setIsSurpriseOpen(true)}
@@ -113,10 +131,10 @@ export default function App() {
       <BentoGrid sisterName={config.sisterName} />
 
       {/* Footer */}
-      <footer className="relative z-10 w-full max-w-5xl mx-auto px-4 py-8 border-t border-white/5 text-center flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+      <footer className="relative z-10 w-full max-w-6xl mx-auto px-4 py-8 border-t border-white/5 text-center flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
         <div className="flex items-center gap-1.5 justify-center">
           <span>Diseñado con amor fraternal para</span>
-          <span className="text-slate-300 font-bold">{config.sisterName}</span>
+          <span className="text-slate-200 font-bold">{config.sisterName}</span>
           <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 inline" />
         </div>
         <div>
@@ -124,7 +142,7 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Surprise Modal (The Climax - Only triggers automatically at 0) */}
+      {/* Surprise Modal (The Climax) */}
       <SurpriseModal
         isOpen={isSurpriseOpen}
         onClose={() => setIsSurpriseOpen(false)}
