@@ -167,8 +167,8 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
             </div>
           </div>
 
-          {/* SFX BADGE (Discreetly in the corner) */}
-          {current.sfx && (
+          {/* SFX BADGE (Discreetly in the corner, not on final photo) */}
+          {current.sfx && !current.isFinal && (
             <motion.div
               initial={{ scale: 0, rotate: -15 }}
               animate={{ scale: 1, rotate: -4 }}
@@ -179,46 +179,35 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
             </motion.div>
           )}
 
-          {/* LOWER COMIC DIALOGUE BOX (Positioned cleanly below the art - ZERO FACE OVERLAP) */}
-          <div className="absolute bottom-20 sm:bottom-24 inset-x-3 sm:inset-x-8 max-w-3xl mx-auto z-20">
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.25 }}
-              className="comic-balloon p-4 sm:p-5 shadow-2xl relative border-3 border-black bg-white"
-            >
-              {/* Speaker Tag */}
-              <div className="flex items-center justify-between mb-1.5 border-b border-slate-200 pb-1">
-                <span className="text-xs sm:text-sm font-black text-red-700 uppercase font-comic flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  {current.speaker}
-                </span>
-                {current.hedwigNote && (
-                  <span className="text-[11px] sm:text-xs text-slate-600 font-bold font-comic italic hidden sm:inline">
-                    {current.hedwigNote}
+          {/* LOWER COMIC DIALOGUE BOX (Only on scenes 1 to 9 - final scene leaves photo completely clean) */}
+          {!current.isFinal && (
+            <div className="absolute bottom-20 sm:bottom-24 inset-x-3 sm:inset-x-8 max-w-3xl mx-auto z-20">
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.25 }}
+                className="comic-balloon p-4 sm:p-5 shadow-2xl relative border-3 border-black bg-white"
+              >
+                {/* Speaker Tag */}
+                <div className="flex items-center justify-between mb-1.5 border-b border-slate-200 pb-1">
+                  <span className="text-xs sm:text-sm font-black text-red-700 uppercase font-comic flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    {current.speaker}
                   </span>
-                )}
-              </div>
-
-              {/* Main Dialogue text */}
-              <p className="text-xs sm:text-base font-extrabold text-slate-900 font-comic leading-snug">
-                {current.dialogue}
-              </p>
-
-              {/* Final Scene WhatsApp Trigger inside box */}
-              {current.isFinal && (
-                <div className="mt-3 pt-2 border-t border-slate-200 flex justify-end">
-                  <button
-                    onClick={handleShareWhatsApp}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-black font-black text-xs sm:text-sm transition-all border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center gap-2 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]"
-                  >
-                    <Send className="w-4 h-4 text-black" />
-                    <span>Mandar felicitación por WhatsApp 🦉</span>
-                  </button>
+                  {current.hedwigNote && (
+                    <span className="text-[11px] sm:text-xs text-slate-600 font-bold font-comic italic hidden sm:inline">
+                      {current.hedwigNote}
+                    </span>
+                  )}
                 </div>
-              )}
-            </motion.div>
-          </div>
+
+                {/* Main Dialogue text */}
+                <p className="text-xs sm:text-base font-extrabold text-slate-900 font-comic leading-snug">
+                  {current.dialogue}
+                </p>
+              </motion.div>
+            </div>
+          )}
         </motion.div>
       </AnimatePresence>
 
@@ -273,19 +262,24 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
           ))}
         </div>
 
-        {/* Right: Next / Finish Button */}
-        <button
-          onClick={handleNext}
-          disabled={sceneIndex === 9}
-          className={`px-4 sm:px-5 py-2 rounded-xl bg-[#FFDE00] hover:bg-[#FFE838] text-black font-black text-xs border-2 border-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 transition-all ${
-            sceneIndex === 9
-              ? 'opacity-30 cursor-not-allowed'
-              : 'cursor-pointer active:translate-x-[2px] active:translate-y-[2px]'
-          }`}
-        >
-          <span>{sceneIndex === 8 ? '¡Coronación! ⚡' : 'Siguiente'}</span>
-          <ChevronRight className="w-4 h-4 text-black" />
-        </button>
+        {/* Right: Next / Finish WhatsApp Button */}
+        {sceneIndex === 9 ? (
+          <button
+            onClick={handleShareWhatsApp}
+            className="px-4 sm:px-5 py-2 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-black font-black text-xs border-2 border-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px]"
+          >
+            <Send className="w-3.5 h-3.5 text-black" />
+            <span>Felicitar por WhatsApp 🦉</span>
+          </button>
+        ) : (
+          <button
+            onClick={handleNext}
+            className="px-4 sm:px-5 py-2 rounded-xl bg-[#FFDE00] hover:bg-[#FFE838] text-black font-black text-xs border-2 border-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px]"
+          >
+            <span>{sceneIndex === 8 ? '¡Coronación! ⚡' : 'Siguiente'}</span>
+            <ChevronRight className="w-4 h-4 text-black" />
+          </button>
+        )}
       </footer>
     </div>
   );
