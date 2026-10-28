@@ -61,41 +61,27 @@ export const CountdownClock: React.FC<CountdownClockProps> = ({
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 my-auto">
-      {/* 4 Cards Grid framed without vertical scroll */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 md:gap-6">
+    <div className="w-full max-w-5xl mx-auto px-1 sm:px-4 my-auto">
+      {/* Responsive Grid: 2 cols on mobile, 4 cols on desktop */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
         {units.map((unit) => (
           <div
             key={unit.label}
-            className={`group relative rounded-3xl p-4 sm:p-6 md:p-8 hogwarts-frame text-center overflow-hidden transition-all duration-500 hover:scale-[1.02] ${unit.borderAccent}`}
+            className={`group relative rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-8 hogwarts-frame text-center overflow-hidden transition-all duration-300 ${unit.borderAccent}`}
           >
-            {/* Corner Decorative Filigree Elements (Harry Potter style) */}
-            <div className="absolute top-2 left-2 text-[10px] text-amber-500/40 font-mono pointer-events-none select-none">
-              ✦
-            </div>
-            <div className="absolute top-2 right-2 text-[10px] text-amber-500/40 font-mono pointer-events-none select-none">
-              ✦
-            </div>
-            <div className="absolute bottom-2 left-2 text-[10px] text-amber-500/40 font-mono pointer-events-none select-none">
-              ✦
-            </div>
-            <div className="absolute bottom-2 right-2 text-[10px] text-amber-500/40 font-mono pointer-events-none select-none">
-              ✦
-            </div>
-
             {/* Ambient magic aura */}
-            <div className="absolute -top-12 -right-12 w-28 h-28 bg-[#D3A625]/15 rounded-full blur-2xl group-hover:bg-[#D3A625]/25 transition-all pointer-events-none" />
+            <div className="absolute -top-10 -right-10 w-24 h-24 bg-[#D3A625]/15 rounded-full blur-xl pointer-events-none" />
 
             {/* Giant Digit Display */}
-            <div className="relative z-10 flex items-center justify-center min-h-[70px] sm:min-h-[100px] md:min-h-[120px]">
+            <div className="relative z-10 flex items-center justify-center min-h-[50px] sm:min-h-[85px] md:min-h-[120px]">
               <AnimatePresence mode="popLayout">
                 <motion.span
                   key={unit.value}
-                  initial={{ opacity: 0, y: 15, scale: 0.94 }}
+                  initial={{ opacity: 0, y: 12, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -15, scale: 0.94 }}
-                  transition={{ duration: 0.25, ease: 'easeOut' }}
-                  className="font-mono text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-black tracking-tight text-[#FFF4D0] drop-shadow-[0_4px_20px_rgba(211,166,37,0.4)]"
+                  exit={{ opacity: 0, y: -12, scale: 0.95 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="font-mono text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-[#FFF4D0] drop-shadow-[0_4px_18px_rgba(211,166,37,0.35)]"
                 >
                   {pad(unit.value)}
                 </motion.span>
@@ -103,20 +89,20 @@ export const CountdownClock: React.FC<CountdownClockProps> = ({
             </div>
 
             {/* Rune & Label */}
-            <div className="relative z-10 mt-2 sm:mt-3 flex items-center justify-center gap-1.5 sm:gap-2">
-              <span className="text-amber-400/80 text-xs font-serif-magic">
+            <div className="relative z-10 mt-1 sm:mt-2.5 flex items-center justify-center gap-1 sm:gap-2">
+              <span className="text-amber-400/80 text-[10px] sm:text-xs font-serif-magic">
                 {unit.rune}
               </span>
-              <span className="text-[11px] sm:text-xs md:text-sm font-black tracking-[0.25em] text-[#D3A625] uppercase font-serif-magic">
+              <span className="text-[10px] sm:text-xs md:text-sm font-black tracking-[0.2em] text-[#D3A625] uppercase font-serif-magic">
                 {unit.label}
               </span>
-              <span className="text-amber-400/80 text-xs font-serif-magic">
+              <span className="text-amber-400/80 text-[10px] sm:text-xs font-serif-magic">
                 {unit.rune}
               </span>
             </div>
 
-            {/* Subtle bottom gold enchanted line */}
-            <div className="absolute bottom-0 inset-x-6 h-[2px] bg-gradient-to-r from-transparent via-[#D3A625]/60 to-transparent group-hover:via-[#FFD700] transition-all" />
+            {/* Subtle bottom gold line */}
+            <div className="absolute bottom-0 inset-x-4 h-[2px] bg-gradient-to-r from-transparent via-[#D3A625]/60 to-transparent" />
           </div>
         ))}
       </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Clock, Volume2, VolumeX, Sparkles, X, Scroll } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Clock, Sparkles, X, Scroll } from 'lucide-react';
 import { sound } from '../lib/audio';
 import { fireGrandCelebration } from '../lib/confetti';
 
@@ -16,14 +16,12 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
   onBackToCountdown,
 }) => {
   const [sceneIndex, setSceneIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(!sound.enabled);
   const [isParchmentOpen, setIsParchmentOpen] = useState(false);
 
   useEffect(() => {
-    // Enable background audio with Prologue.mp3 at 1.25x speed
+    // Sound is always enabled in loop
     sound.enabled = true;
     sound.playBgm();
-    setIsMuted(false);
     sound.playGrandMagicChime();
     fireGrandCelebration();
 
@@ -46,11 +44,6 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
     setSceneIndex((prev) => Math.max(prev - 1, 0));
   };
 
-  const toggleSound = () => {
-    const enabled = sound.toggle();
-    setIsMuted(!enabled);
-  };
-
   const openParchment = () => {
     sound.playGrandMagicChime();
     setIsParchmentOpen(true);
@@ -60,18 +53,16 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
 
 ¡Felices 40 años! ⚡
 
-Llegaste a las cuatro décadas más fuerte, más sabia y con la mejor onda del mundo. Dicen que cumplir 40 asusta, pero la verdad es que te convertiste en la mejor versión de ti misma. 
+Llegaste a las cuatro décadas más fuerte, más sabia y con la mejor onda del mundo. Dicen que cumplir 40 asusta, pero la verdad es que te convertiste en la mejor versión de vos misma. 
 
-Gracias por todas las risas, por apoyarme siempre, por ser mi compañera incondicional y por ponerle magia a nuestras vidas.
+Gracias por todas las risas, por bancarme siempre, por ser mi compañera incondicional y por ponerle magia a nuestras vidas.
 
-No importa cuántos años pasen: para mí siempre vas a ser mi hermana y la campeona indiscutida de Gryffindor.
+No importa cuántos años pasen: para mí siempre vas a ser mi hermana querida y la campeona indiscutida de Gryffindor.
 
-¡Que sigas cumpliendo muchos mas años de alegría y magia!
-
-Te amo hermanita, y estoy orgulloso de ti cada dia.
+¡Que este nuevo año te traiga todo lo que soñás y más!
 
 Con todo mi cariño y amor,
-Tu Gemelo con barba.`;
+Tu hermano.`;
 
   const letterText = birthdayLetter || defaultLetter;
 
@@ -164,106 +155,101 @@ Tu Gemelo con barba.`;
   const current = scenes[sceneIndex];
 
   return (
-    <div className="fixed inset-0 w-screen h-screen overflow-hidden select-none bg-black z-50 flex flex-col justify-between">
-      {/* FULL BLEED 16:9 CARTOON ILLUSTRATION */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`scene-${sceneIndex}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.35, ease: 'easeOut' }}
-          className="absolute inset-0 w-full h-full bg-cover bg-center"
-          style={{ backgroundImage: `url('${current.image}')` }}
-        >
-          {/* TOP NARRATION BADGE (Compact, no face overlap) */}
-          <div className="absolute top-3 sm:top-5 inset-x-4 max-w-lg mx-auto z-20 pointer-events-none">
-            <div className="comic-narration-box px-4 py-2 rounded-xl text-center shadow-2xl">
-              <span className="text-[10px] sm:text-[11px] tracking-widest font-mono font-black text-red-700 block">
-                ⚡ GIULLIANA Y LA ORDEN DE LAS 4 DÉCADAS • {current.chapter} ({sceneIndex + 1}/10) ⚡
-              </span>
-              <h2 className="text-xs sm:text-sm font-black text-black font-comic mt-0.5">
-                {current.banner}
-              </h2>
+    <div className="fixed inset-0 h-dvh w-screen overflow-hidden select-none bg-[#06040A] z-50 flex flex-col justify-between p-2 sm:p-4">
+      {/* ========================================================
+          TOP NARRATION BANNER (Ultra compact on mobile)
+          ======================================================== */}
+      <header className="w-full max-w-xl mx-auto shrink-0 z-20 pt-1 pb-1">
+        <div className="comic-narration-box py-1 px-3 rounded-xl text-center shadow-md">
+          <span className="text-[9px] sm:text-[11px] tracking-widest font-mono font-black text-red-700 block">
+            ⚡ GIULLIANA Y LA ORDEN DE LAS 4 DÉCADAS • {current.chapter} ({sceneIndex + 1}/10) ⚡
+          </span>
+          <h2 className="text-[11px] sm:text-sm font-black text-black font-comic truncate mt-0.5">
+            {current.banner}
+          </h2>
+        </div>
+      </header>
+
+      {/* ========================================================
+          CENTER COMIC SCENE (Responsive: Vertical on mobile,
+          Widescreen on desktop - NO CROPPING, NO OVERLAP)
+          ======================================================== */}
+      <main className="flex-1 w-full max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center gap-2 sm:gap-4 my-auto min-h-0 overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`scene-panel-${sceneIndex}`}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.25 }}
+            className="w-full h-full flex flex-col md:flex-row items-center justify-center gap-2 sm:gap-4 min-h-0"
+          >
+            {/* The 16:9 Artwork Frame (Always 100% visible, preserves full aspect ratio) */}
+            <div className="relative w-full md:w-auto md:flex-1 h-auto max-h-[50dvh] md:max-h-[75dvh] aspect-video rounded-2xl overflow-hidden border-3 border-black shadow-[4px_4px_0px_#000] bg-black shrink-0 mx-auto">
+              <img
+                src={current.image}
+                alt={current.banner}
+                className="w-full h-full object-contain md:object-cover object-center"
+              />
+
+              {/* SFX Badge in top corner of art */}
+              {current.sfx && !current.isFinal && (
+                <div className="absolute top-2 right-2 comic-sfx px-2 sm:px-3 py-1 rounded-lg text-[9px] sm:text-xs font-comic shadow-md pointer-events-none">
+                  {current.sfx}
+                </div>
+              )}
             </div>
-          </div>
 
-          {/* SFX BADGE (Only on scenes 1 to 9) */}
-          {current.sfx && !current.isFinal && (
-            <motion.div
-              initial={{ scale: 0, rotate: -15 }}
-              animate={{ scale: 1, rotate: -4 }}
-              transition={{ delay: 0.3, type: 'spring' }}
-              className="absolute top-20 right-4 sm:right-10 comic-sfx px-3.5 py-1.5 rounded-xl text-xs sm:text-sm z-20 font-comic shadow-2xl pointer-events-none"
-            >
-              {current.sfx}
-            </motion.div>
-          )}
-
-          {/* LOWER COMIC DIALOGUE BOX (Only on scenes 1 to 9) */}
-          {!current.isFinal && (
-            <div className="absolute bottom-20 sm:bottom-24 inset-x-3 sm:inset-x-8 max-w-3xl mx-auto z-20">
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.25 }}
-                className="comic-balloon p-4 sm:p-5 shadow-2xl relative border-3 border-black bg-white"
-              >
-                {/* Speaker Tag */}
-                <div className="flex items-center justify-between mb-1.5 border-b border-slate-200 pb-1">
-                  <span className="text-xs sm:text-sm font-black text-red-700 uppercase font-comic flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            {/* Narrative / Dialogue / Parchment Section */}
+            {!current.isFinal ? (
+              <div className="w-full md:w-[320px] lg:w-[360px] shrink-0 my-auto">
+                <div className="comic-balloon p-3 sm:p-4 shadow-lg border-3 border-black bg-white">
+                  <span className="text-[11px] sm:text-xs font-black text-red-700 uppercase font-comic flex items-center gap-1 mb-1">
+                    <Sparkles className="w-3 h-3 text-amber-500" />
                     {current.speaker}
                   </span>
+                  <p className="text-xs sm:text-sm font-extrabold text-slate-900 font-comic leading-snug">
+                    {current.dialogue}
+                  </p>
                   {current.hedwigNote && (
-                    <span className="text-[11px] sm:text-xs text-slate-600 font-bold font-comic italic hidden sm:inline">
+                    <p className="text-[10px] text-slate-500 font-bold font-comic italic mt-1.5 border-t border-slate-100 pt-1">
                       {current.hedwigNote}
-                    </span>
+                    </p>
                   )}
                 </div>
+              </div>
+            ) : (
+              /* Final Scene Parchment Trigger */
+              <div className="w-full md:w-[320px] lg:w-[360px] shrink-0 flex items-center justify-center my-auto">
+                <motion.button
+                  onClick={openParchment}
+                  initial={{ scale: 0.95 }}
+                  animate={{ scale: [1, 1.04, 1] }}
+                  transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+                  className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#D3A625] via-[#FFE600] to-[#E5BE57] text-black font-black text-xs sm:text-sm font-serif-magic border-3 border-black shadow-[5px_5px_0px_#000] flex items-center justify-center gap-2.5 cursor-pointer active:translate-x-[2px] active:translate-y-[2px]"
+                >
+                  <span className="text-xl">📜</span>
+                  <span className="font-comic font-black text-xs sm:text-sm">Abrir Pergamino de tu Hermano</span>
+                  <Sparkles className="w-4 h-4 text-amber-900" />
+                </motion.button>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </main>
 
-                {/* Main Dialogue text */}
-                <p className="text-xs sm:text-base font-extrabold text-slate-900 font-comic leading-snug">
-                  {current.dialogue}
-                </p>
-              </motion.div>
-            </div>
-          )}
-
-          {/* FINAL SCENE: FLOATING MAGICAL PARCHMENT BUTTON (SCENE 10) */}
-          {current.isFinal && (
-            <div className="absolute bottom-20 sm:bottom-24 inset-x-4 max-w-md mx-auto z-20 flex justify-center">
-              <motion.button
-                onClick={openParchment}
-                initial={{ scale: 0.9, y: 15 }}
-                animate={{ scale: [1, 1.05, 1], y: [0, -6, 0] }}
-                transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-                className="group px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#D3A625] via-[#FFE600] to-[#E5BE57] text-black font-black text-xs sm:text-sm font-serif-magic border-3 border-black shadow-[6px_6px_0px_#000] flex items-center gap-3 cursor-pointer hover:brightness-110 active:translate-x-[2px] active:translate-y-[2px]"
-              >
-                <div className="w-8 h-8 rounded-xl bg-black/10 flex items-center justify-center text-xl">
-                  📜
-                </div>
-                <div className="text-left leading-tight">
-                  <span className="text-[10px] font-mono uppercase tracking-wider block text-red-800">Carta Secreta</span>
-                  <span className="font-comic font-black text-sm">Abrir Pergamino de tu Hermano</span>
-                </div>
-                <Sparkles className="w-4 h-4 text-amber-800 animate-spin" style={{ animationDuration: '4s' }} />
-              </motion.button>
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
-
-      {/* UNROLLED FLOATING PARCHMENT MODAL (Full Reading Mode) */}
+      {/* ========================================================
+          UNROLLED PARCHMENT MODAL
+          ======================================================== */}
       <AnimatePresence>
         {isParchmentOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md">
             <motion.div
-              initial={{ opacity: 0, scale: 0.85, y: 30 }}
+              initial={{ opacity: 0, scale: 0.85, y: 25 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.85, y: 30 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-xl parchment-card rounded-3xl p-6 sm:p-9 text-[#2B1810] shadow-[12px_12px_0px_#000] border-4 border-black max-h-[90vh] overflow-y-auto"
+              exit={{ opacity: 0, scale: 0.85, y: 25 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-lg parchment-card rounded-3xl p-5 sm:p-8 text-[#2B1810] shadow-[10px_10px_0px_#000] border-4 border-black max-h-[88dvh] overflow-y-auto"
             >
               {/* Close Button */}
               <button
@@ -271,35 +257,35 @@ Tu Gemelo con barba.`;
                   sound.playClick();
                   setIsParchmentOpen(false);
                 }}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/10 hover:bg-black/20 text-[#2B1810] flex items-center justify-center cursor-pointer transition-all"
+                className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 text-[#2B1810] flex items-center justify-center cursor-pointer transition-all"
                 title="Cerrar pergamino"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
 
-              {/* Hogwarts Wax Seal Header */}
-              <div className="text-center pb-4 border-b-2 border-[#8C6A3C]/40 mb-5">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#740001] text-[#FFD700] text-xl font-serif-magic border-2 border-[#D3A625] shadow-lg mb-2">
+              {/* Hogwarts Seal Header */}
+              <div className="text-center pb-3 border-b-2 border-[#8C6A3C]/40 mb-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#740001] text-[#FFD700] text-lg font-serif-magic border-2 border-[#D3A625] shadow-md mb-1.5">
                   ⚡
                 </div>
-                <div className="text-[11px] font-black uppercase tracking-widest text-[#740001] font-mono">
+                <div className="text-[10px] font-black uppercase tracking-widest text-[#740001] font-mono">
                   Colegio Hogwarts de Magia y Hechicería
                 </div>
-                <h3 className="font-magic text-xl sm:text-2xl font-black text-[#2B1810] mt-1">
+                <h3 className="font-magic text-lg sm:text-xl font-black text-[#2B1810] mt-0.5">
                   Decreto Fraternal de los 40 Años
                 </h3>
               </div>
 
               {/* The Letter Body */}
-              <div className="font-parchment text-sm sm:text-base leading-relaxed space-y-4 whitespace-pre-line text-[#3C2415] italic font-medium px-2">
+              <div className="font-parchment text-xs sm:text-sm leading-relaxed space-y-3 whitespace-pre-line text-[#3C2415] italic font-medium px-1">
                 {letterText}
               </div>
 
-              {/* Bottom Wax Seal Signature & Close */}
-              <div className="mt-8 pt-4 border-t-2 border-[#8C6A3C]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  <Scroll className="w-5 h-5 text-[#740001]" />
-                  <span className="text-xs font-serif-magic font-bold text-[#740001]">
+              {/* Bottom Signature & Close */}
+              <div className="mt-6 pt-3 border-t-2 border-[#8C6A3C]/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5">
+                  <Scroll className="w-4 h-4 text-[#740001]" />
+                  <span className="text-[11px] font-serif-magic font-bold text-[#740001]">
                     Sellado bajo juramento de Gryffindor
                   </span>
                 </div>
@@ -309,9 +295,9 @@ Tu Gemelo con barba.`;
                     sound.playClick();
                     setIsParchmentOpen(false);
                   }}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#2B1810] hover:bg-[#442817] text-[#FFE8A3] font-serif-magic font-bold text-xs transition-all cursor-pointer shadow-md"
+                  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#2B1810] hover:bg-[#442817] text-[#FFE8A3] font-serif-magic font-bold text-xs transition-all cursor-pointer shadow-md"
                 >
-                  Enrollar pergamino y volver a la foto ↺
+                  Enrollar pergamino y ver foto ↺
                 </button>
               </div>
             </motion.div>
@@ -319,40 +305,34 @@ Tu Gemelo con barba.`;
         )}
       </AnimatePresence>
 
-      {/* FIXED BOTTOM NAVIGATION CONTROLLER */}
-      <footer className="fixed bottom-3 sm:bottom-5 inset-x-3 sm:inset-x-8 z-30 flex items-center justify-between max-w-4xl mx-auto pointer-events-auto">
-        {/* Left: Volver al reloj + Toggle de audio Prologue */}
-        <div className="flex items-center gap-2">
+      {/* ========================================================
+          BOTTOM CONTROLLER BAR (Compact, responsive on all devices)
+          ======================================================== */}
+      <footer className="w-full max-w-4xl mx-auto shrink-0 z-30 flex items-center justify-between px-1 pb-1 pt-1.5">
+        {/* Left: Volver al reloj + Botón Anterior */}
+        <div className="flex items-center gap-1.5">
           <button
             onClick={onBackToCountdown}
-            className="px-3 sm:px-4 py-2 rounded-xl bg-black/85 hover:bg-black text-[#FFDE00] font-black text-xs border-2 border-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 cursor-pointer"
+            className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-black/85 hover:bg-black text-[#FFDE00] font-black text-[11px] sm:text-xs border-2 border-black shadow-[2px_2px_0px_#000] flex items-center gap-1 cursor-pointer"
           >
             <Clock className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Reloj</span>
           </button>
 
           <button
-            onClick={toggleSound}
-            className="p-2 rounded-xl bg-black/85 hover:bg-black text-[#FFDE00] border-2 border-black shadow-[3px_3px_0px_#000] cursor-pointer"
-            title={isMuted ? "Activar música Prologue (1.25x)" : "Silenciar música"}
-          >
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400 animate-pulse" />}
-          </button>
-
-          <button
             onClick={handlePrev}
             disabled={sceneIndex === 0}
-            className={`px-3 py-2 rounded-xl bg-white/95 hover:bg-white text-black font-black text-xs border-2 border-black shadow-[3px_3px_0px_#000] flex items-center gap-1 transition-all ${
-              sceneIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer active:translate-x-[2px] active:translate-y-[2px]'
+            className={`px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/95 hover:bg-white text-black font-black text-[11px] sm:text-xs border-2 border-black shadow-[2px_2px_0px_#000] flex items-center gap-1 transition-all ${
+              sceneIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer active:translate-x-[1px] active:translate-y-[1px]'
             }`}
           >
-            <ChevronLeft className="w-4 h-4 text-black" />
+            <ChevronLeft className="w-3.5 h-3.5 text-black" />
             <span className="hidden sm:inline">Anterior</span>
           </button>
         </div>
 
         {/* Center: 10 progress dots */}
-        <div className="flex items-center gap-1 sm:gap-1.5 bg-black/70 px-3 py-1.5 rounded-full border border-black backdrop-blur-md">
+        <div className="flex items-center gap-1 bg-black/70 px-2.5 py-1 rounded-full border border-black backdrop-blur-md">
           {scenes.map((_, idx) => (
             <button
               key={idx}
@@ -360,10 +340,10 @@ Tu Gemelo con barba.`;
                 sound.playClick();
                 setSceneIndex(idx);
               }}
-              className={`h-2 sm:h-2.5 rounded-full transition-all border border-black cursor-pointer ${
+              className={`h-2 rounded-full transition-all border border-black cursor-pointer ${
                 sceneIndex === idx
-                  ? 'w-5 sm:w-7 bg-[#FFDE00]'
-                  : 'w-2 bg-white/50 hover:bg-white'
+                  ? 'w-4 sm:w-6 bg-[#FFDE00]'
+                  : 'w-1.5 sm:w-2 bg-white/50 hover:bg-white'
               }`}
               title={`Viñeta ${idx + 1}`}
             />
@@ -377,17 +357,17 @@ Tu Gemelo con barba.`;
               sound.playClick();
               setSceneIndex(0);
             }}
-            className="px-4 sm:px-5 py-2 rounded-xl bg-[#FFDE00] hover:bg-[#FFE838] text-black font-black text-xs border-2 border-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px]"
+            className="px-3 sm:px-4 py-1.5 rounded-xl bg-[#FFDE00] hover:bg-[#FFE838] text-black font-black text-[11px] sm:text-xs border-2 border-black shadow-[2px_2px_0px_#000] flex items-center gap-1 transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]"
           >
-            <span>Releer historieta ↺</span>
+            <span>Releer ↺</span>
           </button>
         ) : (
           <button
             onClick={handleNext}
-            className="px-4 sm:px-5 py-2 rounded-xl bg-[#FFDE00] hover:bg-[#FFE838] text-black font-black text-xs border-2 border-black shadow-[3px_3px_0px_#000] flex items-center gap-1.5 transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px]"
+            className="px-3 sm:px-4 py-1.5 rounded-xl bg-[#FFDE00] hover:bg-[#FFE838] text-black font-black text-[11px] sm:text-xs border-2 border-black shadow-[2px_2px_0px_#000] flex items-center gap-1 transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px]"
           >
-            <span>{sceneIndex === 8 ? '¡Coronación! ⚡' : 'Siguiente'}</span>
-            <ChevronRight className="w-4 h-4 text-black" />
+            <span>{sceneIndex === 8 ? '¡Final! ⚡' : 'Siguiente'}</span>
+            <ChevronRight className="w-3.5 h-3.5 text-black" />
           </button>
         )}
       </footer>
