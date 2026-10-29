@@ -17,24 +17,23 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
 }) => {
   const [sceneIndex, setSceneIndex] = useState(0);
   const [isParchmentOpen, setIsParchmentOpen] = useState(false);
-  const [layoutMode, setLayoutMode] = useState<'desktop' | 'mobile-portrait' | 'mobile-landscape'>('desktop');
+  const getLayoutMode = (): 'desktop' | 'mobile-portrait' | 'mobile-landscape' => {
+    if (typeof window === 'undefined') return 'desktop';
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (w > h && h < 580) return 'mobile-landscape';
+    if (w < 768) return 'mobile-portrait';
+    return 'desktop';
+  };
+
+  const [layoutMode, setLayoutMode] = useState<'desktop' | 'mobile-portrait' | 'mobile-landscape'>(getLayoutMode);
 
   // Detect exact viewport profile dynamically
   useEffect(() => {
     const handleResize = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-
-      if (h < 540 && w > h) {
-        setLayoutMode('mobile-landscape');
-      } else if (w < 768) {
-        setLayoutMode('mobile-portrait');
-      } else {
-        setLayoutMode('desktop');
-      }
+      setLayoutMode(getLayoutMode());
     };
 
-    handleResize();
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
 
@@ -47,7 +46,7 @@ export const ComicExperience: React.FC<ComicExperienceProps> = ({
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
-      sound.pauseBgm();
+      // Continuous background music: do not pause BGM on unmount
     };
   }, []);
 
@@ -184,7 +183,7 @@ Tu hermano.`;
       {layoutMode === 'mobile-landscape' && (
         <div className="h-full w-full flex items-center justify-between p-2 gap-3 relative">
           {/* Left: 16:9 Artwork fitted cleanly */}
-          <div className="relative h-[92dvh] aspect-video rounded-xl overflow-hidden border-2 border-black shadow-[3px_3px_0px_#000] bg-black shrink-0">
+          <div className="relative h-[92dvh] max-w-[58vw] aspect-video rounded-xl overflow-hidden border-2 border-black shadow-[3px_3px_0px_#000] bg-black shrink-0">
             <img
               src={current.image}
               alt={current.banner}
@@ -289,7 +288,7 @@ Tu hermano.`;
           </header>
 
           {/* 16:9 Artwork (Uncropped, fits full aspect ratio cleanly) */}
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden border-3 border-black shadow-[4px_4px_0px_#000] bg-black shrink-0">
+          <div className="relative w-full max-h-[44dvh] aspect-video rounded-2xl overflow-hidden border-3 border-black shadow-[4px_4px_0px_#000] bg-black shrink-0 mx-auto">
             <img
               src={current.image}
               alt={current.banner}
@@ -401,8 +400,8 @@ Tu hermano.`;
           </header>
 
           {/* Central Artwork Display Frame */}
-          <main className="relative z-10 flex-1 flex flex-col items-center justify-center my-auto min-h-0">
-            <div className="relative max-h-[64vh] aspect-video rounded-3xl overflow-hidden border-4 border-black shadow-[10px_10px_0px_#D3A625] bg-black group">
+          <main className="relative z-10 flex-1 flex flex-col items-center justify-center my-auto min-h-0 w-full max-w-5xl px-2">
+            <div className="relative max-h-[54dvh] max-w-4xl aspect-video rounded-3xl overflow-hidden border-4 border-black shadow-[10px_10px_0px_#D3A625] bg-black group mx-auto">
               <img
                 src={current.image}
                 alt={current.banner}

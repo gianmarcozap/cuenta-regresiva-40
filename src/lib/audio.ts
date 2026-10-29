@@ -2,7 +2,7 @@
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private bgm: HTMLAudioElement | null = null;
-  public enabled: boolean = false;
+  public enabled: boolean = true;
 
   private initAudio() {
     if (!this.ctx) {
@@ -25,9 +25,11 @@ class SoundEngine {
     this.initAudio();
     if (this.bgm) {
       this.bgm.playbackRate = 1.25;
-      this.bgm.play().catch(() => {
-        // Autoplay may wait for user gesture
-      });
+      if (this.bgm.paused) {
+        this.bgm.play().catch(() => {
+          // Autoplay policy: will resume on first user interaction
+        });
+      }
     }
   }
 

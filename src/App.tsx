@@ -44,20 +44,29 @@ export default function App() {
       setMode('comic');
     }
 
-    // Always start sound on first interaction
+    // Always start sound in loop (immediate attempt + first user interaction)
+    sound.enabled = true;
+    sound.playBgm();
+
     const handleFirstGesture = () => {
       sound.enabled = true;
       sound.playBgm();
       window.removeEventListener('click', handleFirstGesture);
       window.removeEventListener('touchstart', handleFirstGesture);
+      window.removeEventListener('pointerdown', handleFirstGesture);
+      window.removeEventListener('keydown', handleFirstGesture);
     };
 
-    window.addEventListener('click', handleFirstGesture);
-    window.addEventListener('touchstart', handleFirstGesture);
+    window.addEventListener('click', handleFirstGesture, { passive: true });
+    window.addEventListener('touchstart', handleFirstGesture, { passive: true });
+    window.addEventListener('pointerdown', handleFirstGesture, { passive: true });
+    window.addEventListener('keydown', handleFirstGesture, { passive: true });
 
     return () => {
       window.removeEventListener('click', handleFirstGesture);
       window.removeEventListener('touchstart', handleFirstGesture);
+      window.removeEventListener('pointerdown', handleFirstGesture);
+      window.removeEventListener('keydown', handleFirstGesture);
     };
   }, [config]);
 

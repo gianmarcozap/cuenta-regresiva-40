@@ -40,16 +40,24 @@ export const CountdownClock: React.FC<CountdownClockProps> = ({
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTime());
 
   useEffect(() => {
+    // If target date is already reached or passed on load, transition immediately
+    const initial = calculateTime();
+    if (initial.isExpired) {
+      onZeroReached();
+      return;
+    }
+
     const timer = setInterval(() => {
       const updated = calculateTime();
       setTimeLeft(updated);
       if (updated.isExpired) {
+        clearInterval(timer);
         onZeroReached();
       }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, [targetDate, onZeroReached]);
 
   const units = [
     { label: 'DÍAS', value: timeLeft.days, rune: 'ᛞ', borderAccent: 'border-amber-500/30' },
